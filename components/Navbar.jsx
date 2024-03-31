@@ -21,7 +21,7 @@ const Nav = () => {
   const { data: session } = useSession();
   const path = usePathname();
   const [providers, setProviders] = useState(null);
-
+  console.log(session);
   useEffect(() => {
     (async () => {
       const res = await getProviders();
@@ -87,7 +87,7 @@ const Nav = () => {
                 <Button
                   key={provider.name}
                   onClick={() => {
-                    signIn(provider.id);
+                    signIn("google");
                   }}
                   gradientDuoTone="purpleToBlue"
                   outline
