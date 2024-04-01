@@ -26,6 +26,18 @@ const Products = () => {
     };
     fetchProducts();
   }, []);
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/product/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setProducts(products.filter((product) => product._id !== id));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <Layout>
       <div className="mx-auto">
@@ -49,6 +61,9 @@ const Products = () => {
                 <Table.HeadCell>
                   <span className="sr-only">Edit</span>
                 </Table.HeadCell>
+                <Table.HeadCell>
+                  <span className="sr-only">delete</span>
+                </Table.HeadCell>
               </Table.Head>
               <Table.Body className="divide-y">
                 {products.map((product) => (
@@ -66,6 +81,13 @@ const Products = () => {
                       >
                         Edit
                       </Link>
+                      <a
+                        href="#"
+                        className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 mx-2"
+                        onClick={() => handleDelete(product._id)}
+                      >
+                        Delete
+                      </a>
                     </Table.Cell>
                   </Table.Row>
                 ))}

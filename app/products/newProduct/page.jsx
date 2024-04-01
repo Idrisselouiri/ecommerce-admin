@@ -3,21 +3,24 @@
 import React, { useState } from "react";
 import Layout from "@components/Layout";
 import Form from "@components/Form";
+import { useRouter } from "next/navigation";
 
 const NewProduct = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    price: 0,
+    price: null,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const router = useRouter();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setError(null);
       setLoading(true);
-      const res = await fetch("/api/product", {
+      setError(null);
+      const res = await fetch("/api/product/create", {
         method: "POST",
         body: JSON.stringify({
           title: formData.title,
@@ -25,18 +28,23 @@ const NewProduct = () => {
           price: formData.price,
         }),
       });
+      if (res.ok) {
+        setLoading(false);
+        setError(null);
+        router.push("/products");
+      }
     } catch (error) {
-      setError(error.message);
       setLoading(false);
+      setError(error.message);
     }
   };
   return (
     <Layout>
       <Form
-        type="Create a Product"
-        setFormData={setFormData}
+        type="Create Product"
         formData={formData}
-        onSubmit={handleSubmit}
+        setFormData={setFormData}
+        handleSubmit={handleSubmit}
         loading={loading}
         error={error}
       />
