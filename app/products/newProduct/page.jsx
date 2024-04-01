@@ -33,6 +33,7 @@ const NewProduct = () => {
   return (
     <Layout>
       <Form
+        type="Create a Product"
         setFormData={setFormData}
         formData={formData}
         onSubmit={handleSubmit}
