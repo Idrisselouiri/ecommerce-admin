@@ -2,7 +2,7 @@ import Product from "@models/product";
 import { connectToDB } from "@utils/database";
 
 export async function POST(request) {
-  const { title, description, price } = await request.json();
+  const { title, description, price, imageUrls } = await request.json();
 
   try {
     await connectToDB();
@@ -11,6 +11,7 @@ export async function POST(request) {
       title,
       description,
       price,
+      imageUrls,
     });
     await newProduct.save();
     return new Response(JSON.stringify(newProduct), { status: 201 });

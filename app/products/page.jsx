@@ -38,6 +38,7 @@ const Products = () => {
       console.log(error.message);
     }
   };
+
   return (
     <Layout>
       <div className="mx-auto">

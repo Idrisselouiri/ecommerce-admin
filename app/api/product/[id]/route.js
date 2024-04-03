@@ -15,7 +15,7 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(request) {
-  const { id, title, description, price } = await request.json();
+  const { id, title, description, price, imageUrls } = await request.json();
   try {
     await connectToDB();
 
@@ -26,6 +26,7 @@ export async function PUT(request) {
           title,
           description,
           price,
+          imageUrls,
         },
       },
       { new: true }

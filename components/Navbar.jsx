@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  Avatar,
-  Button,
-  Navbar,
-  TextInpu,
-  Dropdownt,
-  TextInput,
-  Dropdown,
-} from "flowbite-react";
+import { Avatar, Button, Navbar, TextInput, Dropdown } from "flowbite-react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun, FaShoppingCart } from "react-icons/fa";
 import { HiLogout, HiViewGrid } from "react-icons/hi";

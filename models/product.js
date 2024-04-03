@@ -13,6 +13,10 @@ const ProductSchema = new Schema({
     type: Number,
     required: [true, "Price is required!"],
   },
+  imageUrls: {
+    type: Array,
+    required: true,
+  },
 });
 
 const Product = models.Product || model("Product", ProductSchema);
