@@ -2,6 +2,7 @@
 
 import React from "react";
 import { HiArrowSmRight, HiChartPie, HiShoppingBag } from "react-icons/hi";
+import { TfiMenuAlt } from "react-icons/tfi";
 import { Sidebar } from "flowbite-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,6 +29,15 @@ const SideBar = () => {
               icon={HiShoppingBag}
             >
               Products
+            </Sidebar.Item>
+          </Link>
+          <Link href={"/categories"}>
+            <Sidebar.Item
+              active={path === "/categories"}
+              as="div"
+              icon={TfiMenuAlt}
+            >
+              Categories
             </Sidebar.Item>
           </Link>
           <Sidebar.Item icon={HiArrowSmRight}>Sign In</Sidebar.Item>
