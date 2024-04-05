@@ -8,7 +8,7 @@ import Link from "next/link";
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  console.log(products);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -73,7 +73,7 @@ const Products = () => {
                       {product.title}
                     </Table.Cell>
                     <Table.Cell>Black</Table.Cell>
-                    <Table.Cell>Accessories</Table.Cell>
+                    <Table.Cell>{product.category?.name}</Table.Cell>
                     <Table.Cell>{product.price}</Table.Cell>
                     <Table.Cell>
                       <Link

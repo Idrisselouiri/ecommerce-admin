@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "@components/Layout";
 import Form from "@components/Form";
 import { useRouter } from "next/navigation";
@@ -18,15 +18,16 @@ const NewProduct = () => {
     description: "",
     price: null,
     imageUrls: [],
+    category: "",
   });
+  const [productProperties, setProductProperties] = useState({});
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [files, setFiles] = useState([]);
-
   const router = useRouter();
-  console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,9 +38,11 @@ const NewProduct = () => {
         method: "POST",
         body: JSON.stringify({
           title: formData.title,
+          category: formData.category,
           description: formData.description,
           price: formData.price,
           imageUrls: formData.imageUrls,
+          properties: productProperties,
         }),
       });
       if (res.ok) {
@@ -109,6 +112,43 @@ const NewProduct = () => {
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
     });
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/categorie/get");
+        const data = await res.json();
+        if (res.ok) {
+          setCategories(data);
+          setLoading(false);
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log(error.message);
+      }
+    };
+    fetchData();
+  }, []);
+  const propertiesToFill = [];
+  if (categories.length > 0 && formData.category) {
+    let catInfo = categories.find(({ _id }) => _id === formData.category);
+    propertiesToFill.push(...catInfo.properties);
+    while (catInfo?.parent?._id) {
+      const parentCat = categories.find(
+        ({ _id }) => _id === catInfo?.parent?._id
+      );
+      propertiesToFill.push(...parentCat.properties);
+      catInfo = parentCat;
+    }
+  }
+  function setProductProp(propName, value) {
+    setProductProperties((prev) => {
+      const newProductProps = { ...prev };
+      newProductProps[propName] = value;
+      return newProductProps;
+    });
+  }
   return (
     <Layout>
       <Form
@@ -123,6 +163,10 @@ const NewProduct = () => {
         error={error}
         uploading={uploading}
         imageUploadError={imageUploadError}
+        categories={categories}
+        propertiesToFill={propertiesToFill}
+        productProperties={setProductProperties}
+        setProductProp={setProductProp}
       />
     </Layout>
   );

@@ -6,6 +6,7 @@ const categorieSchema = new Schema({
     required: [true, "Name is required!"],
   },
   parent: { type: mongoose.Types.ObjectId, ref: "Categorie" },
+  properties: [{ type: Object }],
 });
 
 const Categorie = models?.Categorie || model("Categorie", categorieSchema);

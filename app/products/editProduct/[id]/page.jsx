@@ -19,12 +19,15 @@ const EditProduct = ({ params }) => {
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [files, setFiles] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     price: null,
     imageUrls: [],
+    category: "",
   });
+  const [productProperties, setProductProperties] = useState({});
   const router = useRouter();
   useEffect(() => {
     const fetchProduct = async () => {
@@ -34,10 +37,12 @@ const EditProduct = ({ params }) => {
         if (res.ok) {
           setFormData({
             title: data.title,
+            category: data.category,
             description: data.description,
             price: data.price,
             imageUrls: data.imageUrls,
           });
+          setProductProperties(data.properties || {});
           setProduct(data);
         }
       } catch (error) {
@@ -58,10 +63,12 @@ const EditProduct = ({ params }) => {
         method: "PUT",
         body: JSON.stringify({
           id: product._id,
+          category: formData.category,
           title: formData.title,
           description: formData.description,
           price: formData.price,
           imageUrls: formData.imageUrls,
+          properties: productProperties,
         }),
       });
       if (res.ok) {
@@ -132,6 +139,42 @@ const EditProduct = ({ params }) => {
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
     });
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/categorie/get");
+        const data = await res.json();
+        if (res.ok) {
+          setCategories(data);
+          setLoading(false);
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log(error.message);
+      }
+    };
+    fetchData();
+  }, []);
+  const propertiesToFill = [];
+  if (categories.length > 0 && formData.category) {
+    let catInfo = categories.find(({ _id }) => _id === formData.category);
+    propertiesToFill.push(...catInfo.properties);
+    while (catInfo?.parent?._id) {
+      const parentCat = categories.find(
+        ({ _id }) => _id === catInfo?.parent?._id
+      );
+      propertiesToFill.push(...parentCat.properties);
+      catInfo = parentCat;
+    }
+  }
+  function setProductProp(propName, value) {
+    setProductProperties((prev) => {
+      const newProductProps = { ...prev };
+      newProductProps[propName] = value;
+      return newProductProps;
+    });
+  }
   return (
     <Layout>
       <Form
@@ -145,6 +188,10 @@ const EditProduct = ({ params }) => {
         error={error}
         uploading={uploading}
         imageUploadError={imageUploadError}
+        categories={categories}
+        propertiesToFill={propertiesToFill}
+        productProperties={productProperties}
+        setProductProp={setProductProp}
       />
     </Layout>
   );

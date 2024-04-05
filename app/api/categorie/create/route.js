@@ -2,10 +2,10 @@ import Categorie from "@models/categorie";
 import { connectToDB } from "@utils/database";
 
 export async function POST(request) {
-  const { name, parentCatg } = await request.json();
+  const { name, parentCatg, properties } = await request.json();
   try {
     await connectToDB();
-    const newCategory = new Categorie({ name, parent: parentCatg });
+    const newCategory = new Categorie({ name, parent: parentCatg, properties });
     await newCategory.save();
     return new Response(JSON.stringify(newCategory), { status: 201 });
   } catch (error) {

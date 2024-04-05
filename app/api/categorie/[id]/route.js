@@ -1,17 +1,18 @@
 import Categorie from "@models/categorie";
 import { connectToDB } from "@utils/database";
 
-export async function PUT(request) {
-  const { name, parentCatg, id } = await request.json();
+export async function PUT(request, { params }) {
+  const { name, parentCatg, properties } = await request.json();
   try {
     await connectToDB();
 
     const editedCategory = await Categorie.findByIdAndUpdate(
-      id,
+      params.id,
       {
         $set: {
           name,
           parent: parentCatg,
+          properties,
         },
       },
       { new: true }

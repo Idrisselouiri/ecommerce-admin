@@ -14,6 +14,10 @@ const Form = ({
   error,
   uploading,
   imageUploadError,
+  categories,
+  propertiesToFill,
+  productProperties,
+  setProductProp,
 }) => (
   <div className="p-3 max-w-3xl mx-auto min-h-screen">
     <h1 className="text-center text-3xl my-7 font-semibold">{type}</h1>
@@ -28,6 +32,36 @@ const Form = ({
           value={formData.title}
         />
       </div>
+      <select
+        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+        value={formData.category}
+      >
+        <option value="">Uncategories</option>
+        {categories.length > 0 &&
+          categories.map((categorie) => (
+            <option key={categorie._id} value={categorie._id}>
+              {categorie.name}
+            </option>
+          ))}
+      </select>
+      {propertiesToFill.length > 0 &&
+        propertiesToFill.map((p) => (
+          <div key={p.name} className="flex items-center gap-2">
+            <label>{p.name[0].toUpperCase() + p.name.substring(1)}</label>
+            <div>
+              <select
+                value={productProperties[p.name]}
+                onChange={(ev) => setProductProp(p.name, ev.target.value)}
+              >
+                {p.values.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        ))}
       <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
         <FileInput
           type="file"
