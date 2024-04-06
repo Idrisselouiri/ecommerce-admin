@@ -11,6 +11,7 @@ import Link from "next/link";
 
 const Nav = () => {
   const { data: session } = useSession();
+
   const path = usePathname();
   const [providers, setProviders] = useState(null);
   useEffect(() => {
@@ -41,6 +42,7 @@ const Nav = () => {
       <Button className="w-12 h-10 lg:hidden" color="gray" pill>
         <AiOutlineSearch />
       </Button>
+
       <div className="flex items-center gap-2 md:order-2">
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
           <FaSun />
@@ -78,7 +80,7 @@ const Nav = () => {
                 <Button
                   key={provider.name}
                   onClick={() => {
-                    signIn("google");
+                    signIn(provider.id);
                   }}
                   gradientDuoTone="purpleToBlue"
                   outline
