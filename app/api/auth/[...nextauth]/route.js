@@ -1,60 +1,40 @@
-import NextAuth, { getServerSession } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import User from "@models/user";
 import { connectToDB } from "@utils/database";
+import clientPromise from "@utils/mongodb";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
-export const authOptions = {
+const handler = NextAuth({
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-  ],
-  callbacks: {
-    async session({ session }) {
-      // store the user id from MongoDB to session
-      const sessionUser = await User.findOne({ email: session.user.email });
-      session.user.id = sessionUser._id.toString();
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: {
+          label: "Email",
+          type: "email",
+          placeholder: "test@example.com",
+        },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        const email = credentials?.email;
+        const password = credentials?.password;
 
-      return session;
-    },
-    async signIn({ profile }) {
-      try {
         await connectToDB();
-        // check if user already exists
-        const userExists = await User.findOne({ email: profile.email });
+        const user = await User.findOne({ email });
+        const passwordOk = user && bcrypt.compareSync(password, user.password);
 
-        // if not, create a new document and save user in MongoDB
-        if (!userExists) {
-          await User.create({
-            email: profile.email,
-            username: profile.name.replace(" ", "").toLowerCase(),
-            image: profile.picture,
-          });
+        if (passwordOk) {
+          return user;
         }
 
-        return true;
-      } catch (error) {
-        console.log("Error checking if user exists: ", error.message);
-        return false;
-      }
-    },
-  },
-};
-export async function isAdmin() {
-  const session = await getServerSession(authOptions);
-  const userEmail = session?.user?.email;
-  if (!userEmail) {
-    return false;
-  }
-  const user = await User.findOne({ email: userEmail });
-  if (!user) {
-    return false;
-  }
-  return user.admin;
-}
-
-const handler = NextAuth(authOptions);
+        return null;
+      },
+    }),
+  ],
+});
 
 export { handler as GET, handler as POST };

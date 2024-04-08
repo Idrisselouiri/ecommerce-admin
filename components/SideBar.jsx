@@ -22,6 +22,15 @@ const SideBar = () => {
               Dashboard
             </Sidebar.Item>
           </Link>
+          <Link href={"/profile"}>
+            <Sidebar.Item
+              active={path === "/profile"}
+              as="div"
+              icon={HiChartPie}
+            >
+              Profile
+            </Sidebar.Item>
+          </Link>
           <Link href={"/products"}>
             <Sidebar.Item
               active={path === "/products"}
