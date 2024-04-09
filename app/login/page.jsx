@@ -1,30 +1,18 @@
 "use client";
-import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
-import Link from "next/link";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { AiFillGoogleCircle } from "react-icons/ai";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 
-const Register = () => {
-  const [formData, setFormData] = useState({});
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-    } catch (error) {
-      console.log(error.message);
-    }
+
+    await signIn("credentials", { email, password, callbackUrl: "/" });
   };
   return (
     <div className="min-h-screen mt-20">
@@ -52,7 +40,8 @@ const Register = () => {
                 type="email"
                 placeholder="name@company.com"
                 id="email"
-                onChange={handleChange}
+                name="email"
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -61,20 +50,20 @@ const Register = () => {
                 type="password"
                 placeholder="Password"
                 id="password"
-                onChange={handleChange}
+                name="password"
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button gradientDuoTone="purpleToPink" type="submit">
-              Register
+            <Button type="submit" gradientDuoTone="purpleToPink">
+              Login
             </Button>
             <Button
-              onClick={() => signIn("google", { callbackUrl: "/" })}
               type="button"
-              gradientDuoTone="pinkToOrange"
-              outline
+              onClick={() => signIn("google", { callbackUrl: "/" })}
+              gradientDuoTone="purpleToPink"
             >
-              <AiFillGoogleCircle className="w-6 h-6 mr-2" />
-              Continue with Google
+              <AiFillGoogleCircle />
+              Login with google
             </Button>
           </form>
           <div className="flex gap-2 text-sm mt-5">
@@ -89,4 +78,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

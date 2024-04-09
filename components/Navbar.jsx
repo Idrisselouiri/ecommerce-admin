@@ -1,17 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Avatar, Button, Navbar, TextInput, Dropdown } from "flowbite-react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun, FaShoppingCart } from "react-icons/fa";
 import { HiLogout, HiViewGrid } from "react-icons/hi";
 import { usePathname } from "next/navigation";
-import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
 const Nav = () => {
+  const session = useSession();
   const path = usePathname();
-
+  const status = session?.status;
+  console.log(session);
   return (
     <Navbar className="border-b-2">
       <Link
@@ -36,9 +38,49 @@ const Nav = () => {
       </Button>
 
       <div className="flex items-center gap-2 md:order-2">
-        <Link href={"/register"}>
-          <Button gradientDuoTone="purpleToPink">Register</Button>
-        </Link>
+        {status === "authenticated" && (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar
+                alt={session?.data.user.name}
+                img={session?.data.user.image}
+                rounded
+              />
+            }
+          >
+            <Dropdown.Header>
+              <span className="block text-sm">{session?.data.user.name}</span>
+              <span className="block truncate text-sm font-medium">
+                {session?.data.user.email}
+              </span>
+            </Dropdown.Header>
+            <Link href={"/dashboard"}>
+              <Dropdown.Item icon={HiViewGrid}>Dashboard</Dropdown.Item>
+            </Link>
+            <Dropdown.Divider />
+            <Dropdown.Item icon={HiLogout} onClick={signOut}>
+              Sign out
+            </Dropdown.Item>
+          </Dropdown>
+        )}
+        {status === "unauthenticated" && (
+          <>
+            <Link href={"/register"}>
+              <Button gradientDuoTone="purpleToBlue" outline>
+                Register
+              </Button>
+            </Link>
+            <Link href={"/login"}>
+              <Button gradientDuoTone="purpleToBlue" outline>
+                {" "}
+                Login
+              </Button>
+            </Link>
+          </>
+        )}
+
         <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
           <FaSun />
         </Button>

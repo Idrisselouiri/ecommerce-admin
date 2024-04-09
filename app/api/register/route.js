@@ -1,9 +1,11 @@
 import User from "@models/user";
-import { connectToDB } from "@utils/database";
+import * as mongoose from "mongoose";
 import bcryptjs from "bcryptjs";
 
 export async function POST(request) {
   const { email, password } = await request.json();
+
+  mongoose.connect(process.env.MONGODB_URI);
 
   if (!email || !password || email === "" || password === "") {
     return new Response("All fields are required", { status: 400 });
@@ -17,7 +19,6 @@ export async function POST(request) {
   });
 
   try {
-    await connectToDB();
     await newUser.save();
     return new Response("Register successful", { status: 200 });
   } catch (error) {

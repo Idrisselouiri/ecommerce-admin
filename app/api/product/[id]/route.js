@@ -1,10 +1,7 @@
 import Product from "@models/product";
-import { connectToDB } from "@utils/database";
 
 export async function GET(request, { params }) {
   try {
-    await connectToDB();
-
     const product = await Product.findById(params.id);
     if (!product) return new Response("Product Not Found", { status: 404 });
 
@@ -18,8 +15,6 @@ export async function PUT(request) {
   const { id, title, category, description, price, imageUrls, properties } =
     await request.json();
   try {
-    await connectToDB();
-
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
@@ -42,8 +37,6 @@ export async function PUT(request) {
 
 export async function DELETE(request, { params }) {
   try {
-    await connectToDB();
-
     await Product.findByIdAndDelete(params.id);
     return Response.json("Product deleted successfully", { status: 200 });
   } catch (error) {
