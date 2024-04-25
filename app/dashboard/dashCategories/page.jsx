@@ -66,7 +66,7 @@ const Categories = () => {
       }
       if (res.ok) {
         setEditedCategory(null);
-        toast.success("Edited Category successfully");
+        toast.success("Edited Category Successfully");
       } else {
         toast.error("This didn't work.");
       }

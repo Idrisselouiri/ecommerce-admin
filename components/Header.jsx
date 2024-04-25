@@ -96,7 +96,7 @@ export default function Header() {
                     alt={session.user.name}
                   />
                   {toggleDropdown && (
-                    <div className="absolute right-0 top-full mt-5 w-full p-5 rounded-lg bg-white min-w-[230px] flex flex-col gap-2 justify-end items-end shadow-lg	">
+                    <div className="absolute right-0 top-full mt-5 w-full p-6 rounded-lg bg-white min-w-[230px] flex flex-col gap-2 justify-end items-end shadow-lg	">
                       <div>
                         <p className="block text-sm">@{session.user.email}</p>
                         <p className="block text-sm font-medium truncate">
