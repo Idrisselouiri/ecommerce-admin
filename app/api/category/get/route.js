@@ -1,13 +1,13 @@
 import { isAdmin } from "@app/api/auth/[...nextauth]/route";
 import { mongooseConnect } from "@lib/mongoose";
-import Product from "@models/product";
+import Category from "@models/category";
 
 export async function GET() {
+  await mongooseConnect();
   try {
-    await mongooseConnect();
     if (await isAdmin()) {
-      const products = await Product.find();
-      return Response.json(products, { status: 200 });
+      const categories = await Category.find().populate("parent");
+      return Response.json(categories, { status: 200 });
     } else {
       return Response.json({});
     }

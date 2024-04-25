@@ -1,45 +1,83 @@
+import { isAdmin } from "@app/api/auth/[...nextauth]/route";
+import { mongooseConnect } from "@lib/mongoose";
 import Product from "@models/product";
 
 export async function GET(request, { params }) {
+  await mongooseConnect();
   try {
-    const product = await Product.findById(params.id);
-    if (!product) return new Response("Product Not Found", { status: 404 });
-
-    return new Response(JSON.stringify(product), { status: 200 });
+    if (await isAdmin()) {
+      const product = await Product.findById(params.id);
+      if (!product) {
+        return Response.json(
+          { message: "Product Not Found", success: false },
+          { status: 404 }
+        );
+      }
+      return Response.json(product, { status: 200 });
+    } else {
+      return Response.json({});
+    }
   } catch (error) {
-    return new Response("Internal Server Error", { status: 500 });
+    return Response.json(
+      { message: error.message, success: false },
+      { status: 404 }
+    );
   }
 }
 
 export async function PUT(request) {
-  const { id, title, category, description, price, imageUrls, properties } =
+  const { title, category, description, price, imageUrls, properties, id } =
     await request.json();
+
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          title,
-          category,
-          description,
-          price,
-          imageUrls,
-          properties,
+    await mongooseConnect();
+    if (await isAdmin()) {
+      const updatedProduct = await Product.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            title,
+            category,
+            description,
+            price,
+            imageUrls,
+            properties,
+          },
         },
-      },
-      { new: true }
-    );
-    return Response.json(updatedProduct, { status: 200 });
+        { new: true }
+      );
+      return Response.json(
+        { message: "Updated Product Successfull", success: true },
+        { status: 200 }
+      );
+    } else {
+      return Response.json({});
+    }
   } catch (error) {
-    return new Response("Error Updating product", { status: 500 });
+    return Response.json(
+      { message: error.message, success: false },
+      { status: 404 }
+    );
   }
 }
 
 export async function DELETE(request, { params }) {
+  await mongooseConnect();
+
   try {
-    await Product.findByIdAndDelete(params.id);
-    return Response.json("Product deleted successfully", { status: 200 });
+    if (await isAdmin()) {
+      await Product.findByIdAndDelete(params.id);
+      return Response.json(
+        { message: "deleting Successfully", success: true },
+        { status: 200 }
+      );
+    } else {
+      return Response.json({});
+    }
   } catch (error) {
-    return new Response("Error deleting product", { status: 500 });
+    return Response.json(
+      { message: error.message, success: false },
+      { status: 404 }
+    );
   }
 }

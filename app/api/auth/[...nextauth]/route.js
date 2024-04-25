@@ -1,13 +1,13 @@
 import User from "@models/user";
-import NextAuth from "next-auth";
+import NextAuth, { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
-import * as mongoose from "mongoose";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "@utils/mongodb";
 import GoogleProvider from "next-auth/providers/google";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@lib/db";
+import { mongooseConnect } from "@lib/mongoose";
 
-const handler = NextAuth({
+export const authOptions = {
   secret: process.env.SECRET,
   adapter: MongoDBAdapter(clientPromise),
   providers: [
@@ -29,9 +29,7 @@ const handler = NextAuth({
       async authorize(credentials, req) {
         const email = credentials?.email;
         const password = credentials?.password;
-        console.log({ credentials });
-        mongoose.connect(process.env.MONGODB_URI);
-
+        await mongooseConnect();
         const user = await User.findOne({ email });
         const passwordOk =
           user && bcryptjs.compareSync(password, user.password);
@@ -43,6 +41,22 @@ const handler = NextAuth({
       },
     }),
   ],
-});
+};
+export async function isAdmin() {
+  const session = await getServerSession(authOptions);
+  const userEmail = session?.user?.email;
+  if (!userEmail) {
+    return Response.json(
+      { message: "User Session Not Found" },
+      { status: 404 }
+    );
+  }
+  const userInfo = await User.findOne({ email: userEmail });
+  if (!userInfo) {
+    return Response.json({ message: "User Not Found" }, { status: 404 });
+  }
+  return userInfo.isAdmin;
+}
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

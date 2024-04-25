@@ -1,10 +1,12 @@
+import { isAdmin } from "@app/api/auth/[...nextauth]/route";
+import { mongooseConnect } from "@lib/mongoose";
 import Product from "@models/product";
 
 export async function POST(request) {
   const { title, category, description, price, imageUrls, properties } =
     await request.json();
-
   try {
+    await mongooseConnect();
     const newProduct = new Product({
       title,
       category,
@@ -14,8 +16,14 @@ export async function POST(request) {
       properties,
     });
     await newProduct.save();
-    return new Response(JSON.stringify(newProduct), { status: 201 });
+    return Response.json(
+      { message: "Created Product Successfull", success: true },
+      { status: 200 }
+    );
   } catch (error) {
-    return new Response("Failed to create a new product", { status: 500 });
+    return Response.json(
+      { message: error.message, success: true },
+      { status: 404 }
+    );
   }
 }
