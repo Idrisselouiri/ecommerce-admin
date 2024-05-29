@@ -1,9 +1,6 @@
 "use client";
 
 import Product from "@components/product/Product";
-import ProductBox from "@components/product/ProductBox";
-import { Sidebar } from "flowbite-react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
