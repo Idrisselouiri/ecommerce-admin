@@ -14,7 +14,6 @@ const Cart = () => {
   useEffect(() => {
     const fetchCartProducts = async () => {
       const uniqIds = [...new Set(selectedProducts)];
-      console.log(uniqIds);
       const res = await fetch("/api/product?ids=" + uniqIds.join(","));
       const data = await res.json();
       if (res.ok) {
@@ -254,7 +253,7 @@ const Cart = () => {
           type="submit"
           className="bg-emerald-500 px-5 py-2 rounded-xl font-bold text-white w-full my-4 shadow-emerald-300 shadow-lg"
         >
-          Pay ${subtotal + 5}
+          Pay ${total + 5}
         </button>
       </form>
     </section>

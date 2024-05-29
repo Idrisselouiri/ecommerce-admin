@@ -25,7 +25,6 @@ export default function OrdersPage() {
   }
   // Calculate the total number of pages
   const totalPages = Math.ceil(orders.length / pageSize);
-  console.log(orders);
   // Calculate the start and end index for the current page
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = Math.min(currentPage * pageSize, orders.length);

@@ -5,7 +5,6 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { ProductsContext } from "../Provider";
-import { AiOutlineSearch } from "react-icons/ai";
 
 export default function Header() {
   const { data: session } = useSession();
