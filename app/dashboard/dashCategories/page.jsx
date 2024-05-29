@@ -105,23 +105,29 @@ const Categories = () => {
   };
 
   const deleteCategory = async (id) => {
-    try {
-      toast("Loading...");
-      const res = await fetch(`/api/category/${id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (data.success === false) {
-        toast.error(data.message);
+    const savingPromise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`/api/category/${id}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+        if (data.success === false) {
+          resolve();
+        }
+        if (res.ok) {
+          setCategories(categories.filter((categorie) => categorie._id !== id));
+          closeModal();
+          resolve();
+        }
+      } catch (error) {
+        reject();
       }
-      if (res.ok) {
-        setCategories(categories.filter((categorie) => categorie._id !== id));
-        closeModal();
-        toast.success("Category deleted successfully");
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
+    });
+    await toast.promise(savingPromise, {
+      loading: "Loading...",
+      success: "Category deleted successfully",
+      error: "Error",
+    });
   };
 
   function addProperty() {
@@ -300,7 +306,7 @@ const Categories = () => {
             </div>
           </header>
           <div className="overflow-x-auto mx-auto p-4 w-full">
-            {loading && <p className="w-full text-center">Loading...</p>}
+            {loading && <div>Loading Categories...</div>}
             {!loading && categories.length === 0 ? (
               <p className="w-full text-center font-semibold text-xl my-2">
                 No catgories available.
@@ -343,7 +349,7 @@ const Categories = () => {
                       <td className="whitespace-nowrap px-4 py-2 gap-4 flex">
                         <button
                           onClick={() => editCategory(category)}
-                          className="inline-block rounded bg-green-500 px-4 py-2 text-xs font-medium text-white hover:bg-green-700"
+                          className="inline-block rounded bg-emerald-500 px-4 py-2 text-xs font-medium text-white hover:bg-green-700"
                         >
                           Edit
                         </button>

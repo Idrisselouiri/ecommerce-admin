@@ -25,7 +25,7 @@ const Dashboard = () => {
       const res = await fetch("/api/product/getProducts");
       const data = await res.json();
       if (res.ok) {
-        setProducts(data);
+        setProducts(data.products);
       }
     };
     fetchProducts();
@@ -148,7 +148,7 @@ const Dashboard = () => {
                   <p className="text-sm text-gray-500">Profit</p>
 
                   <p className="text-2xl font-medium text-gray-900">
-                    Ksh {formatPrice(totalPrice)}
+                    ${formatPrice(totalPrice)}
                   </p>
                 </div>
 

@@ -1,15 +1,15 @@
 import User from "@models/user";
 import NextAuth, { getServerSession } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import bcryptjs from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@lib/db";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcryptjs from "bcryptjs";
 import { mongooseConnect } from "@lib/mongoose";
+import { UserInfo } from "@models/userInfo";
 
 export const authOptions = {
   secret: process.env.SECRET,
-  adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -27,12 +27,14 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        console.log({ credentials });
         const email = credentials?.email;
         const password = credentials?.password;
         await mongooseConnect();
         const user = await User.findOne({ email });
         const passwordOk =
           user && bcryptjs.compareSync(password, user.password);
+        console.log(passwordOk);
         if (passwordOk) {
           return user;
         }
@@ -51,7 +53,7 @@ export async function isAdmin() {
       { status: 404 }
     );
   }
-  const userInfo = await User.findOne({ email: userEmail });
+  const userInfo = await UserInfo.findOne({ email: userEmail });
   if (!userInfo) {
     return Response.json({ message: "User Not Found" }, { status: 404 });
   }

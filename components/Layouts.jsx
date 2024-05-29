@@ -1,5 +1,5 @@
-import DashSidebar from "./DashSidebar";
 import React from "react";
+import DashSidebar from "./dash/DashSidebar";
 
 const Layouts = ({ children }) => {
   return (

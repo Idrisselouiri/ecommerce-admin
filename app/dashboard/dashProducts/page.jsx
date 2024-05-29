@@ -10,12 +10,13 @@ import { AdminCheck } from "@components/AdminCheck";
 const formatPrice = (price) => {
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
-const pageSize = 10; // Number of products per page
+const pageSize = 9; // Number of products per page
 
 const DashboardProducts = () => {
   const { loading: adminLoading, data: adminData } = AdminCheck();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -29,7 +30,8 @@ const DashboardProducts = () => {
           setProducts([]);
         }
         if (res.ok) {
-          setProducts(data);
+          setProducts(data.products);
+
           setLoading(false);
         }
       } catch (error) {
@@ -101,8 +103,7 @@ const DashboardProducts = () => {
             </div>
           </header>
           <div className="overflow-x-auto mx-auto px-4 w-full">
-            {loading && <p className="w-full text-center">loading...</p>}
-
+            {loading && <div>loading...</div>}
             {!loading && products.length === 0 && (
               <p className="w-full text-center font-semibold text-xl my-2">
                 No products available.
@@ -136,7 +137,7 @@ const DashboardProducts = () => {
                         <div class="h-10 w-10">
                           <img
                             class="h-full w-full rounded-full object-cover object-center bg-gray-200"
-                            src={product.images?.[0]}
+                            src={product.imageUrls?.[0]}
                             alt={product.title}
                           />
                         </div>
@@ -146,12 +147,12 @@ const DashboardProducts = () => {
                         {product.description}
                       </td>
                       <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                        Ksh. {formatPrice(product.price)}
+                        ${formatPrice(product.price)}
                       </td>
                       <td className="whitespace-nowrap px-4 py-2 gap-4 flex">
                         <Link
                           href={"/dashboard/dashProducts/edit/" + product._id}
-                          className="inline-block rounded bg-green-500 px-4 py-2 text-xs font-medium text-white hover:bg-green-700"
+                          className="inline-block rounded bg-emerald-500 px-4 py-2 text-xs font-medium text-white hover:bg-green-700"
                         >
                           Edit
                         </Link>

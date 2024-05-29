@@ -8,7 +8,6 @@ export function AdminCheck() {
   const { status } = session;
   const [data, setData] = useState(false);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     if (status === "authenticated") {
       setLoading(true);

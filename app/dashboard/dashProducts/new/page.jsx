@@ -1,7 +1,7 @@
 "use client";
 
 import { AdminCheck } from "@components/AdminCheck";
-import Form from "@components/Form";
+import Form from "@components/dash/Form";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";

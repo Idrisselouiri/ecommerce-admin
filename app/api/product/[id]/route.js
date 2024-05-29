@@ -5,18 +5,14 @@ import Product from "@models/product";
 export async function GET(request, { params }) {
   await mongooseConnect();
   try {
-    if (await isAdmin()) {
-      const product = await Product.findById(params.id);
-      if (!product) {
-        return Response.json(
-          { message: "Product Not Found", success: false },
-          { status: 404 }
-        );
-      }
-      return Response.json(product, { status: 200 });
-    } else {
-      return Response.json({});
+    const product = await Product.findById(params.id);
+    if (!product) {
+      return Response.json(
+        { message: "Product Not Found", success: false },
+        { status: 404 }
+      );
     }
+    return Response.json(product, { status: 200 });
   } catch (error) {
     return Response.json(
       { message: error.message, success: false },
@@ -63,7 +59,6 @@ export async function PUT(request) {
 
 export async function DELETE(request, { params }) {
   await mongooseConnect();
-
   try {
     if (await isAdmin()) {
       await Product.findByIdAndDelete(params.id);
