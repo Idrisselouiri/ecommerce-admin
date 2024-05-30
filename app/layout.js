@@ -3,6 +3,7 @@ import Provider from "@components/Provider";
 import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
+import Header from "@components/home/Header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <Provider>
           <Toaster />
+          <Header />
           {children}
         </Provider>
       </body>
