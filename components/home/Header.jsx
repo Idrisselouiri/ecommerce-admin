@@ -14,6 +14,7 @@ export default function Header() {
   const [searchTerm, setSearchTerm] = useState("");
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   async function logout() {
     await signOut();
     router.push("/");
@@ -21,21 +22,8 @@ export default function Header() {
   const toggleMobileNav = () => {
     setIsMobileNavOpen(!isMobileNavOpen);
   };
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    const urlParams = new URLSearchParams(useSearchParams);
-    const searchTermFromUrl = urlParams.get("searchTerm");
-    if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl);
-    }
-  }, [useSearchParams]);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const urlParams = new URLSearchParams(searchParams);
-    urlParams.set("searchTerm", searchTerm);
-    const searchQuery = urlParams.toString();
-    router.push(`/search?${searchQuery}`);
-  };
+  const search = searchParams.get("searchTerm");
+  console.log(search);
   const active = "p-2 text-primary bg-secondary rounded-lg";
   const inActive = "p-2";
   return (
@@ -101,7 +89,7 @@ export default function Header() {
                 </li>
               </ul>
             </nav>
-            <form onSubmit={handleSubmit}>
+            <form>
               <input
                 type="text"
                 placeholder="Search..."
