@@ -3,6 +3,7 @@
 import Categories from "@components/home/Categories";
 import Categories2 from "@components/home/Categories2";
 import Footer from "@components/home/Footer";
+import Header from "@components/home/Header";
 import Hero from "@components/home/Hero";
 import Partners from "@components/home/Partners";
 import Services from "@components/home/Services";
